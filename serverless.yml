@@ -1,4 +1,4 @@
-service: slasknet-images
+service: image-tranformation
 
 plugins:
   - serverless-dotenv-plugin
