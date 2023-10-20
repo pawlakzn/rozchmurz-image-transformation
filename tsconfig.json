@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "es2022",   
+    "module": "es2022",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    "outDir": "./dist/",
+    "strict": true,
+    "lib": ["es2022"],
+    "baseUrl": "./src",
+    "paths": {
+      "*": ["*"]
+    },
+    "typeRoots": [
+      "./node_modules/@types/",
+      "./types"
+    ],
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "./src/**/*.test.ts",
+    "tests"
+  ]
+}

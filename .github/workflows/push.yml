@@ -1,0 +1,50 @@
+name: CI/CD
+on:
+  push:
+    branches:
+      - main
+env:
+  CI: true
+  NODE_ENV: test
+jobs:
+  deploy:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Set envs
+        if: endsWith(github.ref, 'main')
+        run: |
+          echo "BUCKET=${{ secrets.UNCOMPRESSED_BUCKET }}" >> $GITHUB_ENV
+          echo "STAGE=rc" >> $GITHUB_ENV
+
+      - name: Create .env file for deployment
+        run: |
+          touch .env
+          echo BUCKET=${{ env.BUCKET }} >> .env
+
+      - name: Deploy
+        run: |
+          npm run sls config
+          npm run sls deploy -- --stage ${{ env.STAGE }}
+        env:
+          NODE_ENV: production
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          BUCKET: ${{ env.BUCKET }}

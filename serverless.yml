@@ -1,0 +1,32 @@
+service: slasknet-images
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-plugin-typescript
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: ${opt:stage, 'main'}
+  region: eu-central-1
+  environment:
+    BUCKET: ${env:BUCKET}
+    AWS_REGION: ${env:AWS_REGION}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action: "lambda:*"
+      Resource: "*"
+    - Effect: "Allow"
+      Action: "s3:*"
+      Resource: "*"
+
+functions:
+  images:
+    handler: src/index.handler
+    events:
+      - s3:
+          bucket: ${env:BUCKET}
+          event: s3:ObjectCreated:*
+          existing: true
+  
