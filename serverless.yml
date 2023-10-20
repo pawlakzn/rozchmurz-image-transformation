@@ -11,7 +11,8 @@ provider:
   stage: ${opt:stage, 'main'}
   region: eu-central-1
   environment:
-    BUCKET: ${env:BUCKET}
+    UNCOMPRESSED_BUCKET: ${env:UNCOMPRESSED_BUCKET}
+    COMPRESSED_BUCKET: ${env:COMPRESSED_BUCKET}
     AWS_REGION: ${env:AWS_REGION}
   iamRoleStatements:
     - Effect: "Allow"
@@ -26,7 +27,7 @@ functions:
     handler: src/index.handler
     events:
       - s3:
-          bucket: ${env:BUCKET}
+          bucket: ${env:UNCOMPRESSED_BUCKET}
           event: s3:ObjectCreated:*
           existing: true
   

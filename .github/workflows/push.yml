@@ -30,13 +30,15 @@ jobs:
       - name: Set envs
         if: endsWith(github.ref, 'main')
         run: |
-          echo "BUCKET=${{ secrets.UNCOMPRESSED_BUCKET }}" >> $GITHUB_ENV
+          echo "UNCOMPRESSED_BUCKET=${{ secrets.UNCOMPRESSED_BUCKET }}" >> $GITHUB_ENV
+          echo "COMPRESSED_BUCKET=${{ secrets.COMPRESSED_BUCKET }}" >> $GITHUB_ENV
           echo "STAGE=rc" >> $GITHUB_ENV
 
       - name: Create .env file for deployment
         run: |
           touch .env
-          echo BUCKET=${{ env.BUCKET }} >> .env
+          echo UNCOMPRESSED_BUCKET=${{ env.UNCOMPRESSED_BUCKET }} >> .env
+          echo COMPRESSED_BUCKET=${{ env.COMPRESSED_BUCKET }} >> .env
 
       - name: Deploy
         run: |
@@ -47,4 +49,5 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          BUCKET: ${{ env.BUCKET }}
+          UNCOMPRESSED_BUCKET: ${{ env.UNCOMPRESSED_BUCKET }}
+          COMPRESSED_BUCKET: ${{ env.COMPRESSED_BUCKET }}
