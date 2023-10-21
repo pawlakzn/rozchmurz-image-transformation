@@ -13,7 +13,6 @@ provider:
   environment:
     UNCOMPRESSED_BUCKET: ${env:UNCOMPRESSED_BUCKET}
     COMPRESSED_BUCKET: ${env:COMPRESSED_BUCKET}
-    AWS_REGION: ${env:AWS_REGION}
   iamRoleStatements:
     - Effect: "Allow"
       Action: "lambda:*"

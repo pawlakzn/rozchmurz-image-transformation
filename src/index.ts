@@ -121,7 +121,6 @@ const createThumbnail = async (
     });
 };
 
-// TODO: test stream to buffer
 const streamToBuffer = (stream: Readable): Promise<Buffer> =>
     new Promise((resolve, reject) => {
         const chunks: Uint8Array[] = [];
@@ -129,6 +128,3 @@ const streamToBuffer = (stream: Readable): Promise<Buffer> =>
         stream.on('error', reject);
         stream.on('end', () => resolve(Buffer.concat(chunks)));
     });
-
-// const streamToBuffer = async (stream: Readable): Promise<Buffer> =>
-//     Buffer.concat(await stream.toArray());
