@@ -3,7 +3,9 @@ import { S3 } from '@aws-sdk/client-s3';
 import { Readable } from 'node:stream';
 import mime from 'mime-types';
 import sharp, { Metadata } from 'sharp';
+import path from 'path';
 import { MAX_LENGTH, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from './constants/image.constants.js';
+import { streamToBuffer } from 'utils/stream-to-buffer.js';
 
 const COMPRESSED_BUCKET = process.env.COMPRESSED_BUCKET;
 const UNCOMPRESSED_BUCKET = process.env.UNCOMPRESSED_BUCKET;
@@ -85,7 +87,7 @@ const resizeIfTooBig = async (buffer: Buffer, meta: Metadata): Promise<Buffer> =
 };
 
 const createThumbnail = async (
-    originalImageKey: string,
+    s3Key: string,
     buffer: Buffer,
     originalWidth?: number,
     originalHeight?: number,
@@ -110,21 +112,14 @@ const createThumbnail = async (
     const thumbnailBuffer = await sharp(buffer).resize(thumbnailWidth, thumbnailHeight).toBuffer();
     const meta = await sharp(thumbnailBuffer).metadata();
     const mimeType = meta?.format ? mime.lookup(meta?.format) : undefined;
+    const { ext, name } = path.parse(s3Key);
 
     await s3.putObject({
         Bucket: COMPRESSED_BUCKET,
-        Key: `${originalImageKey}_thumbnail`,
+        Key: `${name}_thumbnail.${ext}`,
         Body: thumbnailBuffer,
         ContentType: mimeType ? mimeType : undefined,
         Tagging: `shouldCreateThumbnail=false&isThumbnail=true`,
         ACL: 'public-read',
     });
 };
-
-const streamToBuffer = (stream: Readable): Promise<Buffer> =>
-    new Promise((resolve, reject) => {
-        const chunks: Uint8Array[] = [];
-        stream.on('data', (chunk) => chunks.push(chunk));
-        stream.on('error', reject);
-        stream.on('end', () => resolve(Buffer.concat(chunks)));
-    });
