@@ -116,7 +116,7 @@ const createThumbnail = async (
 
     await s3.putObject({
         Bucket: COMPRESSED_BUCKET,
-        Key: `${name}_thumbnail.${ext}`,
+        Key: `${name}_thumbnail${ext}`,
         Body: thumbnailBuffer,
         ContentType: mimeType ? mimeType : undefined,
         Tagging: `shouldCreateThumbnail=false&isThumbnail=true`,
