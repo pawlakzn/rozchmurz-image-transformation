@@ -5,7 +5,7 @@ import mime from 'mime-types';
 import sharp, { Metadata } from 'sharp';
 import path from 'path';
 import { MAX_LENGTH, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from './constants/image.constants.js';
-import { streamToBuffer } from 'utils/stream-to-buffer.js';
+import { streamToBuffer } from './utils/stream-to-buffer.js';
 
 const COMPRESSED_BUCKET = process.env.COMPRESSED_BUCKET;
 const UNCOMPRESSED_BUCKET = process.env.UNCOMPRESSED_BUCKET;
