@@ -30,12 +30,12 @@ export const handler = async (event: S3Event): Promise<void> => {
                     const bodyContents = await streamToBuffer(Body as Readable);
                     const meta = await sharp(bodyContents).metadata();
 
+                    await compress(key, bodyContents, meta);
+
                     const { TagSet } = await s3.getObjectTagging({
                         Key: key,
                         Bucket: UNCOMPRESSED_BUCKET,
                     });
-
-                    await compress(key, bodyContents, meta);
 
                     const shouldCreateThumbnail = TagSet?.find(
                         (tag) => tag.Key === 'shouldCreateThumbnail',
